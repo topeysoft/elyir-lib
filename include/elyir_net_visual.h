@@ -1,0 +1,1 @@
+void setup_elyir_net_visual();
