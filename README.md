@@ -1,1 +1,1 @@
-# HTTP Server for Mongoose OS
+# Elyir Smart Home Firmware Common Library

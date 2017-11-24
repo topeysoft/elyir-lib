@@ -61,14 +61,16 @@ conds:
 #   MGOS_ENABLE_TUNNEL: 0
 
 libs:
-  # - origin: https://github.com/mongoose-os-libs/atca
-  #   weak: true
-  # - origin: https://github.com/mongoose-os-libs/ethernet
-  #   weak: true
-  - origin: https://github.com/mongoose-os-libs/mqtt
-    # weak: true
+  - origin: https://github.com/mongoose-os-libs/ca-bundle
+  - origin: https://github.com/mongoose-os-libs/http-server
+  - origin: https://github.com/mongoose-os-libs/ota-http-server
+  - origin: https://github.com/mongoose-os-libs/ota-http-client
+  - origin: https://github.com/mongoose-os-libs/rpc-service-config
+  - origin: https://github.com/mongoose-os-libs/rpc-service-fs
+  - origin: https://github.com/mongoose-os-libs/rpc-service-ota
+  - origin: https://github.com/mongoose-os-libs/rpc-uart
   - origin: https://github.com/mongoose-os-libs/wifi
-    # weak: true
+  - origin: https://github.com/mongoose-os-libs/mqtt
 
 tags:
   - http
