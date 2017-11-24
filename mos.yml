@@ -9,17 +9,51 @@ includes:
   - include
 
 config_schema:
-  # - ["http", "o", {title: "HTTP Server"}]
-  # - ["http.enable", "b", true, {title: "Enable HTTP Server"}]
-  # - ["http.listen_addr", "s", "80", {title: "Listening port / address"}]
-  # - ["http.document_root", "s", "/", {title: "Root for serving files. Setting to empty disables file serving."}]
-  # - ["http.ssl_cert", "s", {title: "Turn on SSL on the listener, use this cert"}]
-  # - ["http.ssl_key", "s", {title: "SSL key to use"}]
-  # - ["http.ssl_ca_cert", "s", {title: "Verify clients this CA bundle"}]
-  # - ["http.upload_acl", "s", "*", {title: "Upload file ACL"}]
-  # - ["http.hidden_files", "s", {title: "Hidden file pattern"}]
-  # - ["http.auth_domain", "s", {title: "Enable authentication of all HTTP requests"}]
-  # - ["http.auth_file", "s", {title: "Password file to use for auth"}]
+  - ["device.id", "elyir__??????"]
+
+  - ["pins", "o", {title: "Pins layout"}]
+  - ["pins.led", "i", -1, {title: "LED GPIO pin"}]
+  - ["pins.button", "i", -1, {title: "Button GPIO pin"}]
+
+  - ["wifi.ap.enable",  true]
+  - ["wifi.ap.ssid", "Elyir_??????"]
+  - ["wifi.ap.pass", "elyir678"]
+
+  - ["mqtt.enable",  true]
+  - ["mqtt.server", "10.0.1.40:1883"]
+  - ["mqtt.ssl_cert", ""]
+  - ["mqtt.ssl_key", ""]
+
+  - ["mqtt.base", "s", "users/test-user", {title: "Base topic"}]
+  - ["mqtt.pub", "s", "/devices", {title: "Publish topic"}]
+  - ["mqtt.sub", "s", "/devices", {title: "Subscribe topic"}]
+  - ["mqtt.broadcast", "s", "/broadcast", {title: "Broadcast topic"}]
+
+
+conds:
+  - when: mos.platform == "esp32"
+    apply:
+      config_schema:
+        - ["pins.led", 13]
+        - ["pins.button", 0]
+  - when: mos.platform == "esp8266"
+    apply:
+      config_schema:
+        - ["pins.led", 13]
+        - ["pins.button", 0]
+  - when: mos.platform == "cc3200"
+    apply:
+      config_schema:
+        - ["pins.led", 64]
+  - when: mos.platform == "cc3220"
+    apply:
+      config_schema:
+        - ["pins.led", 64]
+        - ["pins.button", 15]
+
+
+
+
 
 # cdefs:
 #   MGOS_ENABLE_WEB_CONFIG: 0
@@ -32,9 +66,9 @@ libs:
   # - origin: https://github.com/mongoose-os-libs/ethernet
   #   weak: true
   - origin: https://github.com/mongoose-os-libs/mqtt
-    weak: true
+    # weak: true
   - origin: https://github.com/mongoose-os-libs/wifi
-    weak: true
+    # weak: true
 
 tags:
   - http
