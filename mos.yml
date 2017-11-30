@@ -9,11 +9,14 @@ includes:
   - include
 
 config_schema:
-  - ["device.id", "elyir__??????"]
+  - ["device.id", "ELYIR??????"]
 
   - ["pins", "o", {title: "Pins layout"}]
   - ["pins.led", "i", -1, {title: "LED GPIO pin"}]
   - ["pins.button", "i", -1, {title: "Button GPIO pin"}]
+  
+  - ["owner", "o", {title: "Device owner"}]
+  - ["owner.uid", "s", "topeysoft", {title: "Owners Unique Identifier"}]
 
   - ["wifi.ap.enable",  true]
   - ["wifi.ap.ssid", "Elyir_??????"]
@@ -24,10 +27,15 @@ config_schema:
   - ["mqtt.ssl_cert", ""]
   - ["mqtt.ssl_key", ""]
 
-  - ["mqtt.base", "s", "users/test-user", {title: "Base topic"}]
-  - ["mqtt.pub", "s", "/devices", {title: "Publish topic"}]
-  - ["mqtt.sub", "s", "/devices", {title: "Subscribe topic"}]
-  - ["mqtt.broadcast", "s", "/broadcast", {title: "Broadcast topic"}]
+  - ["mqtt.base", "s", "users/%s/", {title: "Base topic"}]
+  - ["mqtt.pub", "s", "users/%s/devices/%s/publish", {title: "Publish topic"}]
+  - ["mqtt.sub", "s", "users/%s/devices/%s/receive", {title: "Subscribe topic"}]
+  - ["mqtt.broadcast", "s", "users/%s/devices/%s/broadcast", {title: "Broadcast topic"}]
+  - ["mqtt.topic_status", "s", "users/%s/devices/%s/status", {title: "Status topic"}]
+  - ["mqtt.topic_get", "s", "users/%s/devices/%s/%s/get", {title: "Attribute set topic"}]
+  - ["mqtt.topic_set", "s", "users/%s/devices/%s/%s/set", {title: "Attribute get topic"}]
+  - ["mqtt.topic_info", "s", "users/%s/devices/%s/info", {title: "Info topic"}]
+  - ["mqtt.topic_info_get", "s", "users/%s/devices/%s/info/get", {title: "Info request topic"}]
 
 
 conds:
@@ -62,7 +70,7 @@ conds:
 
 libs:
   - origin: https://github.com/mongoose-os-libs/ca-bundle
-  - origin: https://github.com/mongoose-os-libs/http-server
+  # - origin: https://github.com/mongoose-os-libs/http-server
   - origin: https://github.com/mongoose-os-libs/ota-http-server
   - origin: https://github.com/mongoose-os-libs/ota-http-client
   - origin: https://github.com/mongoose-os-libs/rpc-service-config

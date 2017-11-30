@@ -116,7 +116,8 @@ bool net_conn_flag = false;
 void mqtt_ev_handler(struct mg_connection *c, int ev, void *p, void *user_data) {
   struct mg_mqtt_message *msg = (struct mg_mqtt_message *) p;
   if (ev == MG_EV_MQTT_CONNACK) {
-   LOG(LL_INFO, ("CONNACK: %d", msg->connack_ret_code));
+    LOG(LL_INFO, ("MQTT Connected: %d", msg->connack_ret_code));
+    LOG(LL_INFO, ("CONNACK: %d", msg->connack_ret_code));
     mqtt_conn_flag = true;
     //if (get_cfg()->mqtt.pub == NULL) {
       //LOG(LL_ERROR, ("Run 'mos config-set mqtt.pub=... '"));
@@ -125,7 +126,8 @@ void mqtt_ev_handler(struct mg_connection *c, int ev, void *p, void *user_data) 
     //}
   } else if (ev == MG_EV_CLOSE) {
       mqtt_conn_flag = false;
-        begin_mqtt_conn_visual();  
+      LOG(LL_INFO, ("MQTT Disconnected"));
+      begin_mqtt_conn_visual();  
   }
   (void) user_data;
   (void) msg;
