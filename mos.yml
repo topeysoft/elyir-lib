@@ -10,6 +10,7 @@ includes:
 
 config_schema:
   - ["device.id", "ELYIR??????"]
+  - ["device.default_state", "s", "", {title: "Device default state when started"}]
 
   - ["pins", "o", {title: "Pins layout"}]
   - ["pins.led", "i", -1, {title: "LED GPIO pin"}]
@@ -27,15 +28,14 @@ config_schema:
   - ["mqtt.ssl_cert", ""]
   - ["mqtt.ssl_key", ""]
 
-  - ["mqtt.base", "s", "users/%s/", {title: "Base topic"}]
-  - ["mqtt.pub", "s", "users/%s/devices/%s/publish", {title: "Publish topic"}]
-  - ["mqtt.sub", "s", "users/%s/devices/%s/receive", {title: "Subscribe topic"}]
-  - ["mqtt.broadcast", "s", "users/%s/devices/%s/broadcast", {title: "Broadcast topic"}]
-  - ["mqtt.topic_status", "s", "users/%s/devices/%s/status", {title: "Status topic"}]
-  - ["mqtt.topic_get", "s", "users/%s/devices/%s/%s/get", {title: "Attribute set topic"}]
-  - ["mqtt.topic_set", "s", "users/%s/devices/%s/%s/set", {title: "Attribute get topic"}]
-  - ["mqtt.topic_info", "s", "users/%s/devices/%s/info", {title: "Info topic"}]
-  - ["mqtt.topic_info_get", "s", "users/%s/devices/%s/info/get", {title: "Info request topic"}]
+  - ["mqtt.status_interval", "i", 30000, {title: "Status publish interval"}]
+  - ["mqtt.base", "s", "users/%s/devices/%s/", {title: "Base topic"}]
+  - ["mqtt.broadcast", "s", "broadcast", {title: "Broadcast topic"}]
+  - ["mqtt.topic_state", "s", "state", {title: "Topic to which device state is published"}]
+  - ["mqtt.topic_state_get", "s", "state/get", {title: "Topic to request current state"}]
+  - ["mqtt.topic_state_set", "s", "state/set", {title: "Topic to set device state"}]
+  - ["mqtt.topic_info", "s", "info", {title: "Info topic"}]
+  - ["mqtt.topic_info_get", "s", "info/get", {title: "Info request topic"}]
 
 
 conds:
@@ -72,7 +72,7 @@ libs:
   - origin: https://github.com/mongoose-os-libs/ca-bundle
   # - origin: https://github.com/mongoose-os-libs/http-server
   - origin: https://github.com/mongoose-os-libs/ota-http-server
-  - origin: https://github.com/mongoose-os-libs/ota-http-client
+  # - origin: https://github.com/mongoose-os-libs/ota-http-client
   - origin: https://github.com/mongoose-os-libs/rpc-service-config
   - origin: https://github.com/mongoose-os-libs/rpc-service-fs
   - origin: https://github.com/mongoose-os-libs/rpc-service-ota

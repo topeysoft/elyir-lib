@@ -14,6 +14,7 @@
 #include "mgos_mqtt.h"
 #include "mgos_net.h"
 
+#include "elyir_mqtt.h"
 #include "elyir_net_visual.h"
 
 
@@ -25,11 +26,18 @@ bool net_conn_flag = false;
  mgos_timer_id net_conn_led_timer_id;
  mgos_timer_id mqtt_conn_led_timer_id;
 
+  elyir_handler_t _on_mqtt_visual_ended;
+
 //  uint8_t led_timer_ticks = 0;  /* for led blinker use */
 
  int get_led_gpio_pin(void) {
   return mgos_sys_config_get_pins_led();
   // return get_cfg()->pins.led;
+}
+
+void elyir_set_on_mqtt_visual_ended_handler(elyir_handler_t cb)
+{
+  _on_mqtt_visual_ended = cb;
 }
 
  int mqtt_connected(void) {
@@ -38,6 +46,7 @@ bool net_conn_flag = false;
 
  void end_mqtt_conn_visual(){
     mgos_clear_timer(mqtt_conn_led_timer_id);
+      if(_on_mqtt_visual_ended) _on_mqtt_visual_ended();
 }
  void end_net_conn_visual(){
     mgos_clear_timer(net_conn_led_timer_id);
@@ -79,6 +88,7 @@ bool net_conn_flag = false;
    } 
 
 }
+
 
 
 // void pub(struct mg_connection *c, const char *fmt, ...) {
@@ -124,7 +134,7 @@ void mqtt_ev_handler(struct mg_connection *c, int ev, void *p, void *user_data) 
     //} else {
       //pub(c, "{timestamp:%.3lf, mem_free:%d}", mg_time(), mgos_get_free_heap_size() );  /* post uptime */
     //}
-  } else if (ev == MG_EV_CLOSE) {
+  } else if (ev == MG_EV_MQTT_DISCONNECT) {
       mqtt_conn_flag = false;
       LOG(LL_INFO, ("MQTT Disconnected"));
       begin_mqtt_conn_visual();  
