@@ -1,4 +1,4 @@
-author: TopeySoft
+author: TopeySoft Computers <admin@topeysoft.com>
 description: Shared library for TopeySoft's Elyir Home Automation
 type: lib
 version: 1.0
@@ -10,8 +10,13 @@ includes:
 
 config_schema:
   - ["device.id", "ELYIR??????"]
+  - ["device.type", "s", "generic", {title: "Device type eg. switch"}]
+  - ["device.display_name", "s", "Generic", {title: "Device friendly name eg. Toggle switch"}]
   - ["device.default_state", "s", "", {title: "Device default state when started"}]
+  - ["device.bt_factory_reset_time", "i", 6000, {title: "Device factory reset button hold time"}]
+  - ["device.wifi_fail_time", "i", 60000, {title: "Wait time until AP is active if STA is configured but not connected"}]
 
+ 
   - ["pins", "o", {title: "Pins layout"}]
   - ["pins.led", "i", -1, {title: "LED GPIO pin"}]
   - ["pins.button", "i", -1, {title: "Button GPIO pin"}]
@@ -22,6 +27,10 @@ config_schema:
   - ["wifi.ap.enable",  true]
   - ["wifi.ap.ssid", "Elyir_??????"]
   - ["wifi.ap.pass", "elyir678"]
+  
+  - ["wifi.sta.enable", false]
+  - ["wifi.sta.ssid", "not_set"]
+  - ["wifi.sta.pass", "1234567890"]
 
   - ["mqtt.enable",  true]
   - ["mqtt.server", "10.0.1.40:1883"]
@@ -62,23 +71,29 @@ conds:
 
 
 
+build_vars:
+  MGOS_WIFI_ENABLE_AP_STA: 1
 
-# cdefs:
-#   MGOS_ENABLE_WEB_CONFIG: 0
-#   MGOS_ENABLE_FILE_UPLOAD: 1
-#   MGOS_ENABLE_TUNNEL: 0
+cdefs:
+  MGOS_WIFI_ENABLE_AP_STA: 0
+  # MGOS_ENABLE_WEB_CONFIG: 0
+  # MGOS_ENABLE_FILE_UPLOAD: 1
+  # MGOS_ENABLE_TUNNEL: 0
 
 libs:
   - origin: https://github.com/mongoose-os-libs/ca-bundle
   # - origin: https://github.com/mongoose-os-libs/http-server
   - origin: https://github.com/mongoose-os-libs/ota-http-server
-  # - origin: https://github.com/mongoose-os-libs/ota-http-client
+  - origin: https://github.com/mongoose-os-libs/ota-http-client
   - origin: https://github.com/mongoose-os-libs/rpc-service-config
   - origin: https://github.com/mongoose-os-libs/rpc-service-fs
+  - origin: https://github.com/mongoose-os-libs/rpc-common
   - origin: https://github.com/mongoose-os-libs/rpc-service-ota
   - origin: https://github.com/mongoose-os-libs/rpc-uart
   - origin: https://github.com/mongoose-os-libs/wifi
   - origin: https://github.com/mongoose-os-libs/mqtt
+  - origin: https://github.com/mongoose-os-libs/pwm
+  - origin: https://github.com/mongoose-os-libs/arduino-compat
 
 tags:
   - http

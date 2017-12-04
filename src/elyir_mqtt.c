@@ -10,9 +10,8 @@ bool mqtt_conn = false;
 bool elyir_mqtt_initialized = false;
 mgos_timer_id status_timer_id = false;
 
-
-  elyir_handler_t _dev_state_cb;
-  elyir_handler_t _on_mqtt_connect;
+elyir_handler_t _dev_state_cb;
+elyir_handler_t _on_mqtt_connect;
 
 struct sub_handler
 {
@@ -68,15 +67,29 @@ void elyir_set_on_mqtt_connect_handler(elyir_handler_t cb)
   _on_mqtt_connect = cb;
 }
 
-
 static void pub_info()
 {
   char topic[200];
+  char info_tp[200];
+  char info_get_tp[200];
+  char state_tp[200];
+  char state_set_tp[200];
+  char state_get_tp[200];
   make_topic(topic, mgos_sys_config_get_mqtt_topic_info());
+  make_topic(info_tp, mgos_sys_config_get_mqtt_topic_info());
+  make_topic(info_get_tp, mgos_sys_config_get_mqtt_topic_info_get());
+  make_topic(state_tp, mgos_sys_config_get_mqtt_topic_state());
+  make_topic(state_get_tp, mgos_sys_config_get_mqtt_topic_state_get());
+  make_topic(state_set_tp, mgos_sys_config_get_mqtt_topic_state_set());
+
   char msg[400];
   struct json_out jmo = JSON_OUT_BUF(msg, sizeof(msg));
   json_printf(&jmo, "%M", mgos_print_sys_info);
   pub(topic, "%Q", msg);
+  pub(topic, "{topics:{info:{dump:%Q, get: %Q}, state:{dump:%Q, get: %Q, set:%Q} }, type: %Q  }", info_tp, info_get_tp, state_tp
+  , state_get_tp
+  , state_set_tp
+  , mgos_sys_config_get_device_type());
 }
 
 static void info_handler(struct mg_connection *c, const char *topic, int topic_len,
@@ -152,7 +165,8 @@ void on_mqtt_connected(void *p, void *user_data)
   mqtt_conn = true;
   subscribe_all();
   pub_info();
-  if(_on_mqtt_connect) _on_mqtt_connect();
+  if (_on_mqtt_connect)
+    _on_mqtt_connect();
   begin_status_interval();
   (void)user_data;
   (void)p;
