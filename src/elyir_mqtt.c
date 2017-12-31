@@ -3,8 +3,8 @@
 #include "mgos_rpc.h"
 #include "mgos_mqtt.h"
 #include "mgos_utils.h"
-#include "elyir_mqtt.h"
 #include "fw/src/mgos_timers.h"
+#include "elyir_mqtt.h"
 
 bool mqtt_conn = false;
 bool elyir_mqtt_initialized = false;
@@ -69,24 +69,28 @@ void elyir_set_on_mqtt_connect_handler(elyir_handler_t cb)
 
 static void pub_info()
 {
-  char topic[200];
+  // char topic[200];
   char info_tp[200];
   char info_get_tp[200];
   char state_tp[200];
   char state_set_tp[200];
   char state_get_tp[200];
-  make_topic(topic, mgos_sys_config_get_mqtt_topic_info());
+
+
+  // make_topic(topic, mgos_sys_config_get_mqtt_topic_info());
   make_topic(info_tp, mgos_sys_config_get_mqtt_topic_info());
   make_topic(info_get_tp, mgos_sys_config_get_mqtt_topic_info_get());
   make_topic(state_tp, mgos_sys_config_get_mqtt_topic_state());
   make_topic(state_get_tp, mgos_sys_config_get_mqtt_topic_state_get());
   make_topic(state_set_tp, mgos_sys_config_get_mqtt_topic_state_set());
 
+  mgos_sys_config_set_mqtt_will_topic(info_tp);
+  
   char msg[400];
   struct json_out jmo = JSON_OUT_BUF(msg, sizeof(msg));
   json_printf(&jmo, "%M", mgos_print_sys_info);
-  pub(topic, "%Q", msg);
-  pub(topic, "{topics:{info:{dump:%Q, get: %Q}, state:{dump:%Q, get: %Q, set:%Q} }, type: %Q  }", info_tp, info_get_tp, state_tp
+  pub(info_tp, "%Q", msg);
+  pub(info_tp, "{topics:{info:{dump:%Q, get: %Q}, state:{dump:%Q, get: %Q, set:%Q} }, type: %Q  }", info_tp, info_get_tp, state_tp
   , state_get_tp
   , state_set_tp
   , mgos_sys_config_get_device_type());

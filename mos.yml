@@ -15,6 +15,7 @@ config_schema:
   - ["device.default_state", "s", "", {title: "Device default state when started"}]
   - ["device.bt_factory_reset_time", "i", 6000, {title: "Device factory reset button hold time"}]
   - ["device.wifi_fail_time", "i", 60000, {title: "Wait time until AP is active if STA is configured but not connected"}]
+  
 
  
   - ["pins", "o", {title: "Pins layout"}]
@@ -25,7 +26,7 @@ config_schema:
   - ["owner.uid", "s", "topeysoft", {title: "Owners Unique Identifier"}]
 
   - ["wifi.ap.enable",  true]
-  - ["wifi.ap.ssid", "Elyir_??????"]
+  - ["wifi.ap.ssid", "Elyir.device.??????"]
   - ["wifi.ap.pass", "elyir678"]
   
   - ["wifi.sta.enable", false]
@@ -82,14 +83,14 @@ cdefs:
 
 libs:
   - origin: https://github.com/mongoose-os-libs/ca-bundle
-  # - origin: https://github.com/mongoose-os-libs/http-server
+  - origin: https://github.com/mongoose-os-libs/http-server
   - origin: https://github.com/mongoose-os-libs/ota-http-server
   - origin: https://github.com/mongoose-os-libs/ota-http-client
   - origin: https://github.com/mongoose-os-libs/rpc-service-config
   - origin: https://github.com/mongoose-os-libs/rpc-service-fs
   - origin: https://github.com/mongoose-os-libs/rpc-common
   - origin: https://github.com/mongoose-os-libs/rpc-service-ota
-  - origin: https://github.com/mongoose-os-libs/rpc-uart
+  # - origin: https://github.com/mongoose-os-libs/rpc-uart
   - origin: https://github.com/mongoose-os-libs/wifi
   - origin: https://github.com/mongoose-os-libs/mqtt
   - origin: https://github.com/mongoose-os-libs/pwm

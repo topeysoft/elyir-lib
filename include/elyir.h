@@ -33,6 +33,8 @@ const char *get_state();
 
 void elyir_set_button_handler(elyir_button_cb_t cb);
 
+void analog_write(int pin, float value);
+
 // static void process_state(bool on);
 // static void restore_def_state();
 // void set_state_handler(struct state_handler);
