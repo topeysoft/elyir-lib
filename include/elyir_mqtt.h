@@ -1,6 +1,6 @@
 #include "mgos_mqtt.h"
+#include "elyir_common.h"
 
-typedef void(* elyir_handler_t)(void);
 
 void sub(const char *topic, sub_handler_t handler);
 void pub(const char *topic, const char *fmt, ...);

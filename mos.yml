@@ -34,7 +34,7 @@ config_schema:
   - ["wifi.sta.pass", "1234567890"]
 
   - ["mqtt.enable",  true]
-  - ["mqtt.server", "10.0.1.40:1883"]
+  - ["mqtt.server", "topeysoft.com:1883"]
   - ["mqtt.ssl_cert", ""]
   - ["mqtt.ssl_key", ""]
 

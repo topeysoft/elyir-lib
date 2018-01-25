@@ -4,6 +4,7 @@
 #include "mgos_mqtt.h"
 #include "mgos_utils.h"
 #include "fw/src/mgos_timers.h"
+#include "elyir_common.h"
 #include "elyir_mqtt.h"
 
 bool mqtt_conn = false;
@@ -67,7 +68,7 @@ void elyir_set_on_mqtt_connect_handler(elyir_handler_t cb)
   _on_mqtt_connect = cb;
 }
 
-static void pub_info()
+void pub_info()
 {
   // char topic[200];
   char info_tp[200];
@@ -96,7 +97,7 @@ static void pub_info()
   , mgos_sys_config_get_device_type());
 }
 
-static void info_handler(struct mg_connection *c, const char *topic, int topic_len,
+void info_handler(struct mg_connection *c, const char *topic, int topic_len,
                          const char *msg, int msg_len, void *userdata)
 {
   LOG(LL_DEBUG, ("Got info message on topic %.*s", topic_len, topic));
@@ -107,7 +108,7 @@ static void info_handler(struct mg_connection *c, const char *topic, int topic_l
   (void)userdata;
   (void)c;
 }
-static void pub_status_cb(void *user_data)
+void pub_status_cb(void *user_data)
 {
   if (mqtt_conn && _dev_state_cb)
   {
@@ -115,7 +116,7 @@ static void pub_status_cb(void *user_data)
   }
   (void)user_data;
 }
-static void subscribe_all()
+void subscribe_all()
 {
   struct sub_handler *sh;
   SLIST_FOREACH(sh, &ah->sub_handlers, sub_handlers)
@@ -194,7 +195,7 @@ void on_mqtt_subscribed(void *p, void *user_data)
   (void)p;
 }
 
-static void mqtt_event_handler(struct mg_connection *c, int ev, void *p,
+void mqtt_event_handler(struct mg_connection *c, int ev, void *p,
                                void *user_data)
 {
   struct mg_mqtt_message *msg = (struct mg_mqtt_message *)p;

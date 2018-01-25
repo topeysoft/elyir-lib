@@ -1,12 +1,14 @@
 
 #include "mgos.h"
-#include "elyir.h"
-#include "elyir_mqtt.h"
 #include "mgos_sys_config.h"
 #include "elyir_net_visual.h"
 #include "mgos_gpio.h"
 #include "fw/src/mgos_timers.h"
 #include "mgos_system.h"
+#include "elyir_common.h"
+#include "elyir_mqtt.h"
+#include "elyir_net_visual.h"
+#include "elyir.h"
 
 elyir_button_cb_t _button_cb;
 int ev_monitor_time = 500;
@@ -38,12 +40,12 @@ void elyir_set_button_handler(elyir_button_cb_t cb)
 {
   _button_cb = cb;
 }
-static void reset_to_factory()
+void reset_to_factory()
 {
   mgos_config_reset(MGOS_CONFIG_LEVEL_USER);
   mgos_system_restart();
 }
-static void reset_wifi()
+void reset_wifi()
 {
   mgos_sys_config_set_wifi_ap_enable(true);
   // mgos_sys_config_set_wifi_sta_ssid(" ");
@@ -51,7 +53,7 @@ static void reset_wifi()
   save_config();
   mgos_system_restart();
 }
-static void check_button_press(){
+void check_button_press(){
   bool pressed = !mgos_gpio_read(mgos_sys_config_get_pins_button());
   if (pressed)
   {
@@ -62,7 +64,7 @@ static void check_button_press(){
     bt_hold_time = 0;
   }
 }
-static void check_wifi_conn(){
+void check_wifi_conn(){
   if (!net_conn)
   {
     wifi_conn_time += ev_monitor_time;
@@ -77,13 +79,13 @@ static void check_wifi_conn(){
   }
 }
 
-static void ev_monitor_cb(void *arg)
+void ev_monitor_cb(void *arg)
 {
   check_button_press();
   check_wifi_conn();
   (void)arg;
 }
-static void button_cb(int pin, void *arg)
+void button_cb(int pin, void *arg)
 {
   if (bt_hold_time >= mgos_sys_config_get_device_bt_factory_reset_time())
   {

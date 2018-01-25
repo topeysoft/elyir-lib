@@ -42,10 +42,12 @@ int get_led_gpio_pin(void)
 void elyir_set_on_mqtt_visual_ended_handler(elyir_handler_t cb)
 {
   _on_mqtt_visual_ended = cb;
+  return;
 }
 void elyir_set_on_net_visual_ended_handler(elyir_handler_t cb)
 {
   _on_net_visual_ended = cb;
+  return;
 }
 
 

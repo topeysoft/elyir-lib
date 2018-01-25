@@ -1,3 +1,5 @@
+#include "elyir_common.h"
+
 #if CS_PLATFORM == CS_P_ESP8266
 /* On ESP-12E there is a blue LED connected to GPIO2 (aka U1TX). */
 #define BUTTON_PULL MGOS_GPIO_PULL_UP
@@ -26,7 +28,6 @@ typedef void(* elyir_button_cb_t)(int pin, int hold_time);
 
 
 void elyir_begin(void);
-bool mgos_elyir_lib_init(void);
 
 void save_state(char *state);
 const char *get_state();
@@ -35,6 +36,7 @@ void elyir_set_button_handler(elyir_button_cb_t cb);
 
 void analog_write(int pin, float value);
 
+bool mgos_elyir_lib_init(void);
 // static void process_state(bool on);
 // static void restore_def_state();
 // void set_state_handler(struct state_handler);
