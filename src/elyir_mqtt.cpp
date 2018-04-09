@@ -3,7 +3,7 @@
 #include "mgos_rpc.h"
 #include "mgos_mqtt.h"
 #include "mgos_utils.h"
-#include "fw/src/mgos_timers.h"
+#include "mgos_timers.h"
 #include "elyir_common.h"
 #include "elyir_mqtt.h"
 
@@ -45,7 +45,7 @@ void make_topic(char *topic, const char *path)
   sprintf(topic, mgos_sys_config_get_mqtt_base(),
           mgos_sys_config_get_owner_uid(), mgos_sys_config_get_device_id());
   strcat(topic, path);
-  make_lowercase(topic);
+  // make_lowercase(topic);
   // return topic;
 }
 void elyir_add_mqtt_sub(const char *topic_path, sub_handler_t cb, void *ud)
@@ -172,6 +172,7 @@ void on_mqtt_connected(void *p, void *user_data)
   pub_info();
   if (_on_mqtt_connect)
     _on_mqtt_connect();
+  pub_status_cb(user_data);
   begin_status_interval();
   (void)user_data;
   (void)p;

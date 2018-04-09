@@ -1,5 +1,14 @@
+#ifndef ELYIR_MQTT_h
+#define ELYIR_MQTT_h
+
 #include "mgos_mqtt.h"
+
 #include "elyir_common.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 
 
 void sub(const char *topic, sub_handler_t handler);
@@ -17,3 +26,9 @@ void on_mqtt_connected(void *p, void *user_data);
 // void on_mqtt_disconnected(struct mg_connection *c, void *p, void *user_data);
 // void on_mqtt_recieved(struct mg_connection *c, void *p, void *user_data);
 // void on_mqtt_subscribed(struct mg_connection *c, void *p, void *user_data);
+
+#ifdef __cplusplus
+}  // extern "C"
+#endif
+
+#endif

@@ -1,4 +1,13 @@
+#ifndef ELYIR_h
+#define ELYIR_h
+
 #include "elyir_common.h"
+#include "mongoose/mongoose.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 
 #if CS_PLATFORM == CS_P_ESP8266
 /* On ESP-12E there is a blue LED connected to GPIO2 (aka U1TX). */
@@ -34,9 +43,18 @@ const char *get_state();
 
 void elyir_set_button_handler(elyir_button_cb_t cb);
 
-void analog_write(int pin, float value);
+// void analog_write(int pin, float value);
+
+
 
 bool mgos_elyir_lib_init(void);
 // static void process_state(bool on);
 // static void restore_def_state();
 // void set_state_handler(struct state_handler);
+
+
+#ifdef __cplusplus
+}  // extern "C"
+#endif
+
+#endif

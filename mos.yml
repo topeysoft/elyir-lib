@@ -8,13 +8,20 @@ sources:
 includes:
   - include
 
+# List of dirs. Files from these dirs will be copied to the device filesystem
+filesystem:
+  - fs
+
 config_schema:
   - ["device.id", "ELYIR??????"]
   - ["device.type", "s", "generic", {title: "Device type eg. switch"}]
   - ["device.display_name", "s", "Generic", {title: "Device friendly name eg. Toggle switch"}]
   - ["device.default_state", "s", "", {title: "Device default state when started"}]
+  - ["device.saved_state", "s", "", {title: "Device saved state when started"}]
+  - ["device.initial_config_completed", "b", false, {title: "Flag to indicate that user has completed initial setup"}]
   - ["device.bt_factory_reset_time", "i", 6000, {title: "Device factory reset button hold time"}]
   - ["device.wifi_fail_time", "i", 60000, {title: "Wait time until AP is active if STA is configured but not connected"}]
+  - ["device.schedules", "s", "[{"min":30,"hour":10,"dow":"*","value":1,"label":"lights on"},{"min":0,"hour":15,"dow":"*","value":0,"label":"lights off"}]", {title: "Schedule this device to be at specific states at specific time"}]
   
 
  
@@ -29,16 +36,15 @@ config_schema:
   - ["wifi.ap.ssid", "Elyir.device.??????"]
   - ["wifi.ap.pass", "elyir678"]
   
-  - ["wifi.sta.enable", false]
-  - ["wifi.sta.ssid", "not_set"]
-  - ["wifi.sta.pass", "1234567890"]
+  # - ["wifi.sta.enable", true]
+  # - ["wifi.sta.ssid", "VirusBroadcast"]
+  # - ["wifi.sta.pass", "6185810376"]
 
   - ["mqtt.enable",  true]
-  - ["mqtt.server", "topeysoft.com:1883"]
-  - ["mqtt.ssl_cert", ""]
-  - ["mqtt.ssl_key", ""]
+  - ["mqtt.keep_alive",  5]
+  - ["mqtt.server",  "mqtt.elyir.com:8884"]
 
-  - ["mqtt.status_interval", "i", 30000, {title: "Status publish interval"}]
+  - ["mqtt.status_interval", "i", 180000, {title: "Status publish interval"}] # 180000=3min
   - ["mqtt.base", "s", "users/%s/devices/%s/", {title: "Base topic"}]
   - ["mqtt.broadcast", "s", "broadcast", {title: "Broadcast topic"}]
   - ["mqtt.topic_state", "s", "state", {title: "Topic to which device state is published"}]
@@ -46,7 +52,16 @@ config_schema:
   - ["mqtt.topic_state_set", "s", "state/set", {title: "Topic to set device state"}]
   - ["mqtt.topic_info", "s", "info", {title: "Info topic"}]
   - ["mqtt.topic_info_get", "s", "info/get", {title: "Info request topic"}]
+  - ["mqtt.will_topic", "s", "info", {title: "Info request topic"}]
+  - ["mqtt.will_message", "s", "{\"connected\":false}", {title: "Info request topic"}]
 
+  # - ["gcp.enable",false]
+  # - ["gcp.project", "elyir-home-automation"]
+  # - ["gcp.region", "us-central1"]
+  # - ["gcp.registry", "elyir-devices-dev"]
+  # - ["gcp.key", "rsa_private.pem"]
+  # - ["gcp.device", "ELYIR??????" ]
+  # - ["gcp.token_ttl", "i", 3600, {title: "Life time of the token"}]
 
 conds:
   - when: mos.platform == "esp32"
@@ -76,13 +91,14 @@ build_vars:
   MGOS_WIFI_ENABLE_AP_STA: 1
 
 cdefs:
-  MGOS_WIFI_ENABLE_AP_STA: 0
+  MGOS_WIFI_ENABLE_AP_STA: 1
   # MGOS_ENABLE_WEB_CONFIG: 0
   # MGOS_ENABLE_FILE_UPLOAD: 1
   # MGOS_ENABLE_TUNNEL: 0
 
 libs:
   - origin: https://github.com/mongoose-os-libs/ca-bundle
+  # - origin: https://github.com/mongoose-os-libs/gcp
   - origin: https://github.com/mongoose-os-libs/http-server
   - origin: https://github.com/mongoose-os-libs/ota-http-server
   - origin: https://github.com/mongoose-os-libs/ota-http-client
@@ -95,7 +111,9 @@ libs:
   - origin: https://github.com/mongoose-os-libs/mqtt
   - origin: https://github.com/mongoose-os-libs/pwm
   - origin: https://github.com/mongoose-os-libs/arduino-compat
-
+  - origin: https://github.com/mongoose-os-libs/cron
+  - origin: https://github.com/mongoose-os-libs/jstore
+  
 tags:
   - http
   - c
