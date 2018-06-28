@@ -51,12 +51,28 @@ void elyir_set_on_net_visual_ended_handler(elyir_handler_t cb)
   return;
 }
 
+void save_sys_config(){
+    char *msg = NULL;
+  if (!save_cfg(&mgos_sys_config, &msg))
+    {
+      LOG(LL_ERROR, ("error saving wifi config: %s", (msg ? msg : "")));
+      free(msg);
+      return;
+    }
+}
+
+void _net_on_connected(){
+  mgos_sys_config_set_device_initial_config_completed(true); 
+  save_sys_config(); 
+}
+
 void end_mqtt_conn_visual()
 {
   mgos_clear_timer(mqtt_conn_led_timer_id);
   if (_on_mqtt_visual_ended)
     _on_mqtt_visual_ended();
 }
+
 void end_net_conn_visual()
 {
   // if (!mgos_sys_config_get_wifi_ap_enable())
@@ -67,14 +83,7 @@ void end_net_conn_visual()
   {
     LOG(LL_INFO, ("WiFi connected, disabling Access Point mode."));
     mgos_sys_config_set_wifi_ap_enable(false);
-    mgos_sys_config_set_device_initial_config_completed(true);    
-    char *msg = NULL;
-    if (!save_cfg(&mgos_sys_config, &msg))
-    {
-      LOG(LL_ERROR, ("error saving wifi config: %s", (msg ? msg : "")));
-      free(msg);
-      return;
-    }
+    save_sys_config();
     LOG(LL_INFO, ("Access Point mode, disabled. Restarting device"));
     mgos_system_restart();
   }
@@ -184,6 +193,7 @@ void net_ev_handler(int ev,
     {
       net_conn_flag = true;
       LOG(LL_INFO, ("NET Connected"));
+      _net_on_connected();  
       end_net_conn_visual();
       begin_mqtt_conn_visual();
     }

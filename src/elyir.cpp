@@ -12,6 +12,9 @@
 #include "elyir_mqtt.h"
 #include "elyir_net_visual.h"
 #include "elyir_wifi.h"
+#include "elyir_cron.h"
+#include "elyir_cron_api.h"
+#include "elyir_ota_client.h"
 #include "elyir.h"
 #include <WString.h>
 
@@ -179,5 +182,8 @@ void elyir_begin()
 
   elyir_handle_mqtt();
   setup_elyir_net_visual();
+  elyirCronInit();
+  elyirCronApiInit();
+  elyirOtaClientInit();
   // ElyirWifi();
 }

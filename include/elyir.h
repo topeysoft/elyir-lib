@@ -2,7 +2,7 @@
 #define ELYIR_h
 
 #include "elyir_common.h"
-#include "mongoose/mongoose.h"
+#include "mongoose.h"
 
 #ifdef __cplusplus
 extern "C" {

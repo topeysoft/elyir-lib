@@ -21,8 +21,10 @@ config_schema:
   - ["device.initial_config_completed", "b", false, {title: "Flag to indicate that user has completed initial setup"}]
   - ["device.bt_factory_reset_time", "i", 6000, {title: "Device factory reset button hold time"}]
   - ["device.wifi_fail_time", "i", 60000, {title: "Wait time until AP is active if STA is configured but not connected"}]
-  - ["device.schedules", "s", "[{"min":30,"hour":10,"dow":"*","value":1,"label":"lights on"},{"min":0,"hour":15,"dow":"*","value":0,"label":"lights off"}]", {title: "Schedule this device to be at specific states at specific time"}]
-  
+  - ["device.schedules", "s", "[]", {title: "Schedule this device to be at specific states at specific time"}]
+  - ["device.ota_url", "s", "", {title: "Custom OTA URL"}]
+  # - ["device.location.lat", 53.3242381]
+  # - ["device.location.lon", -6.385785]
 
  
   - ["pins", "o", {title: "Pins layout"}]
@@ -41,7 +43,7 @@ config_schema:
   # - ["wifi.sta.pass", "6185810376"]
 
   - ["mqtt.enable",  true]
-  - ["mqtt.keep_alive",  5]
+  - ["mqtt.keep_alive",  60]
   - ["mqtt.server",  "mqtt.elyir.com:8884"]
 
   - ["mqtt.status_interval", "i", 180000, {title: "Status publish interval"}] # 180000=3min
@@ -50,6 +52,10 @@ config_schema:
   - ["mqtt.topic_state", "s", "state", {title: "Topic to which device state is published"}]
   - ["mqtt.topic_state_get", "s", "state/get", {title: "Topic to request current state"}]
   - ["mqtt.topic_state_set", "s", "state/set", {title: "Topic to set device state"}]
+  - ["mqtt.topic_cron_api_set", "s", "cron/set", {title: "Topic to manage crontab data"}]
+  - ["mqtt.topic_cron_api_get", "s", "cron", {title: "Topic to get crontab data"}]
+  - ["mqtt.topic_ota_api_set", "s", "ota/set", {title: "Topic to manage OTA URL, etc."}]
+  - ["mqtt.topic_ota_api_get", "s", "ota", {title: "Topic to manage OTA URL, etc."}]
   - ["mqtt.topic_info", "s", "info", {title: "Info topic"}]
   - ["mqtt.topic_info_get", "s", "info/get", {title: "Info request topic"}]
   - ["mqtt.will_topic", "s", "info", {title: "Info request topic"}]
@@ -111,8 +117,10 @@ libs:
   - origin: https://github.com/mongoose-os-libs/mqtt
   - origin: https://github.com/mongoose-os-libs/pwm
   - origin: https://github.com/mongoose-os-libs/arduino-compat
-  - origin: https://github.com/mongoose-os-libs/cron
-  - origin: https://github.com/mongoose-os-libs/jstore
+  # - origin: https://github.com/mongoose-os-libs/cron
+  # - origin: https://github.com/mongoose-os-libs/jstore
+  - origin: https://github.com/mongoose-os-libs/rpc-service-cron
+  - origin: https://github.com/mongoose-os-libs/location
   
 tags:
   - http

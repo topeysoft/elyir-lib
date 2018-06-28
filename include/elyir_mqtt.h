@@ -14,7 +14,7 @@ extern "C" {
 void sub(const char *topic, sub_handler_t handler);
 void pub(const char *topic, const char *fmt, ...);
 
-void elyir_set_device_state_handler(elyir_handler_t cb);
+void elyir_set_device_status_handler(elyir_handler_t cb);
 void elyir_set_on_mqtt_connect_handler(elyir_handler_t cb);
 
 

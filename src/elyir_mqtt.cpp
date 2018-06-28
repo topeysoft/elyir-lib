@@ -1,17 +1,18 @@
 #include "mgos.h"
-#include "mgos.h"
 #include "mgos_rpc.h"
 #include "mgos_mqtt.h"
 #include "mgos_utils.h"
 #include "mgos_timers.h"
 #include "elyir_common.h"
+#include "elyir_cron_api.h"
 #include "elyir_mqtt.h"
 
 bool mqtt_conn = false;
 bool elyir_mqtt_initialized = false;
 mgos_timer_id status_timer_id = false;
 
-elyir_handler_t _dev_state_cb;
+elyir_handler_t _dev_set_state_cb;
+elyir_handler_t _dev_status_cb;
 elyir_handler_t _on_mqtt_connect;
 
 struct sub_handler
@@ -59,9 +60,10 @@ void elyir_add_mqtt_sub(const char *topic_path, sub_handler_t cb, void *ud)
   sh->user_data = ud;
   SLIST_INSERT_HEAD(&ah->sub_handlers, sh, sub_handlers);
 }
-void elyir_set_device_state_handler(elyir_handler_t cb)
+
+void elyir_set_device_status_handler(elyir_handler_t cb)
 {
-  _dev_state_cb = cb;
+  _dev_status_cb = cb;
 }
 void elyir_set_on_mqtt_connect_handler(elyir_handler_t cb)
 {
@@ -76,6 +78,8 @@ void pub_info()
   char state_tp[200];
   char state_set_tp[200];
   char state_get_tp[200];
+  char cron_api_set_tp[200];
+  char cron_api_get_tp[200];
 
 
   // make_topic(topic, mgos_sys_config_get_mqtt_topic_info());
@@ -84,6 +88,8 @@ void pub_info()
   make_topic(state_tp, mgos_sys_config_get_mqtt_topic_state());
   make_topic(state_get_tp, mgos_sys_config_get_mqtt_topic_state_get());
   make_topic(state_set_tp, mgos_sys_config_get_mqtt_topic_state_set());
+  make_topic(cron_api_set_tp, mgos_sys_config_get_mqtt_topic_cron_api_set());
+  make_topic(cron_api_get_tp, mgos_sys_config_get_mqtt_topic_cron_api_get());
 
   mgos_sys_config_set_mqtt_will_topic(info_tp);
   
@@ -91,10 +97,16 @@ void pub_info()
   struct json_out jmo = JSON_OUT_BUF(msg, sizeof(msg));
   json_printf(&jmo, "%M", mgos_print_sys_info);
   pub(info_tp, "%Q", msg);
-  pub(info_tp, "{topics:{info:{dump:%Q, get: %Q}, state:{dump:%Q, get: %Q, set:%Q} }, type: %Q  }", info_tp, info_get_tp, state_tp
+  pub(info_tp, "{topics:{info:{dump:%Q, get: %Q}, state:{dump:%Q, get: %Q, set:%Q}, cron:{ get: %Q, set:%Q} , type: %Q  } }"
+  , info_tp
+  , info_get_tp
+  , state_tp
   , state_get_tp
-  , state_set_tp
+  , state_get_tp
+  , cron_api_set_tp
+  , cron_api_get_tp
   , mgos_sys_config_get_device_type());
+  elyir_publish_cron_list();
 }
 
 void info_handler(struct mg_connection *c, const char *topic, int topic_len,
@@ -110,9 +122,9 @@ void info_handler(struct mg_connection *c, const char *topic, int topic_len,
 }
 void pub_status_cb(void *user_data)
 {
-  if (mqtt_conn && _dev_state_cb)
+  if (mqtt_conn && _dev_status_cb)
   {
-    _dev_state_cb();
+    _dev_status_cb();
   }
   (void)user_data;
 }
@@ -224,7 +236,7 @@ void mqtt_event_handler(struct mg_connection *c, int ev, void *p,
   (void)user_data;
 }
 
-void initialize()
+void elyirInitializeMqtt()
 {
   if (!elyir_mqtt_initialized)
   {
@@ -237,6 +249,6 @@ void initialize()
 
 void elyir_handle_mqtt()
 {
-  initialize();
+  elyirInitializeMqtt();
   mgos_mqtt_add_global_handler(mqtt_event_handler, NULL);
 }
